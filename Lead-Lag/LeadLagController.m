@@ -3,18 +3,13 @@ close all
 % Define Laplace variable 's'
 s = tf('s'); % Create a transfer function variable
 
-
-% Lead-Lag Compensator Design
+% Lead Compensator Design
 Kc = 6.7; % Compensator gain (to reduce overshoot decrease this but it'll increase the error)
 
 z1 = .015;  % Lead zero    // rise and settling time
 p1 = 1.8; % Lead pole (to reduce overshoot increase this)
 
-z2 = 0.4; % Lag zero 
-p2 = 2; % Lag pole (to reduce steady-state error reduce this)
-
 omega = 88; % wn
-
 Gc = Kc * ((s + z1) / (s + p1)); % Lead-Lag Compensator
 G = tf(0.21 * omega^2, [1 omega omega^2 0 0]); % System transfer function
 sys_cl = feedback(G * Gc, 1); % Closed-loop system with compensator
@@ -45,8 +40,6 @@ pole(sys_cl)
 % info such as settling time, overshoot, etc..
 info = stepinfo(sys_cl, 'RiseTimeLimits', [0 1], 'SettlingTimeThreshold', 0.05);
 disp(info);
-% info2 = stepinfo(G, 'RiseTimeLimits', [0 1], 'SettlingTimeThreshold', 0.05);
-% disp(info2)
 
 % Check Steady-State Error for Step Input
 steady_state_error = abs(1 - stepResponse(end)); % Steady-state error
@@ -63,8 +56,6 @@ disp(['Steady-State Error for the parabola: ', num2str(steady_state_error_parabo
 figure;
 rlocus(sys_cl);
 title('Root Locus with Lead-Lag Compensator');
-
-
 
 %%
 
